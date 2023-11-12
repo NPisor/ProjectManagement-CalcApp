@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="assignees">
+    <item>Nick</item>
+    <item>Ben</item>
+    <item>Anna</item>
+    </string-array>
+</resources>

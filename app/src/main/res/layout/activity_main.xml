@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ArCoreActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ArCoreActivity">
+
+        <Button
+            android:id="@+id/resolveBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="277dp"
+            android:layout_marginBottom="666dp"
+            android:text="Resolve"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.187"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.079" />
+
+        <Button
+            android:id="@+id/clearBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="289dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="34dp"
+            android:layout_marginBottom="668dp"
+            android:text="Clear"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.808"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.079" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/arFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

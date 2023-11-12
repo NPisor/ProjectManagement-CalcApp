@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "955541091213",
+    "project_id": "projectmanagement-estapp-78bf0",
+    "storage_bucket": "projectmanagement-estapp-78bf0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:955541091213:android:f14ce62a311ff7103f03c4",
+        "android_client_info": {
+          "package_name": "com.example.projectmanagement_calcapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "955541091213-a2cai2ruph569he9rtkufefnrf37ns3s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrrcv0l9baRo9ZUDLgd3tv0tBcsJhjZEE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "955541091213-a2cai2ruph569he9rtkufefnrf37ns3s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

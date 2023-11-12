@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#000000">
+
+        <androidx.camera.view.PreviewView
+            android:id="@+id/taskLocationImage"
+            android:layout_width="match_parent"
+            android:layout_height="260dp"
+            android:alpha="0.8"
+            android:scaleType="centerInside" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:backgroundTint="#B11717"
+                android:orientation="horizontal">
+
+
+            </LinearLayout>
+        </androidx.camera.view.PreviewView>
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/taskAnchorId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="bottom"
+                android:text="Task ID:"
+                android:textColor="#fff"
+                android:textSize="20dp" />
+
+            <Button
+                android:id="@+id/closeTaskWidgetBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="20dp"
+                android:backgroundTint="#E91E63"
+                android:text="Close"
+                android:textColor="#fff"
+                android:textSize="14dp" />
+        </androidx.appcompat.widget.Toolbar>
+
+    </FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="28dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_weight="0.35"
+            android:padding="20dp"
+            android:text="Task Name"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/taskViewName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.35"
+            android:text="TextView" />
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="#ACACAC"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_weight="0.3"
+            android:padding="20dp"
+            android:text="Assigned By:"
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/assignedBy"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_weight="0.3"
+            android:padding="20dp"
+            android:text="null"
+            android:textSize="14dp" />
+
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="#ACACAC"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_weight="0.3"
+            android:padding="20dp"
+            android:text="Assigned To:"
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/assignedTo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_weight="0.3"
+            android:padding="20dp"
+            android:text="null"
+            android:textSize="14dp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/myTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_weight="0.5"
+            android:padding="20dp"
+            android:text="Priority"
+            android:textSize="14dp" />
+
+        <ProgressBar
+            android:id="@+id/priorityProgressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:indeterminate="false"
+            android:max="10"
+            android:progressTint="#4CAF50" />
+
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="#ACACAC"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="#ACACAC"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#f0f0f4"
+        android:paddingLeft="22dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="GPS Coords:"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="16dp" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="73dp"
+        android:paddingTop="20dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/gpscoordstext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="Lat: 0, Long: 0" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+
+</LinearLayout>
