@@ -82,6 +82,8 @@ public class ArCoreActivity extends AppCompatActivity implements FragmentOnAttac
         ArFragment.OnViewCreatedListener{
 
     public ArFragment arFragment;
+
+    public S3Handler s3Handler;
     public Renderable model;
     MutableLiveData<Bitmap> bitmap;
 
@@ -97,9 +99,9 @@ public class ArCoreActivity extends AppCompatActivity implements FragmentOnAttac
     String imageUuid;
     WeakReference<ArCoreActivity> weakActivity;
 
-    private static final String FETCH_USER_TASKS_URL = "http://10.0.0.130:8080/task/assigneeIdJson";
+    private static final String FETCH_USER_TASKS_URL = "http://10.0.0.125:8080/task/assigneeIdJson?assigneeId=0";
 
-    private static final String POST_NEW_TASK_URL = "http://10.0.0.130:8080/task/new";
+    private static final String POST_NEW_TASK_URL = "http://10.0.0.125:8080/task/new";
 
     private FusedLocationProviderClient fusedLocationClient;
 
@@ -193,9 +195,8 @@ public class ArCoreActivity extends AppCompatActivity implements FragmentOnAttac
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("assigneeId", assigneeId).put("assignerId", 2L).put("clientId", 1L).put("priority", 3L)
-            .put("status", 1L).put("description", "This is a test description.").put("imageUuid", imageUuid).put("taskTitle", taskName).put("latitude", currentAnchorRequest.getLatitude())
-                    .put("longitude", (float) data.getDoubleExtra("taskLongitude", 0)).put("latitude", (float) data.getDoubleExtra("taskLatitude", 0));
+            jsonObject.put("assigneeId", assigneeId).put("assignerId", 2L).put("clientId", 1L).put("priority", taskPriority)
+            .put("status", 1L).put("description", "This is a test description.").put("imageUuid", imageUuid).put("taskTitle", taskName).put("longitude", (float) data.getDoubleExtra("taskLongitude", 0)).put("latitude", (float) data.getDoubleExtra("taskLatitude", 0));
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -342,7 +343,7 @@ public class ArCoreActivity extends AppCompatActivity implements FragmentOnAttac
                 // on below line creating a url to post the data.
                 URL url = null;
                 try {
-                    url = new URL("http://10.0.0.130:8080/task/assigneeIdJson?assigneeId=1");
+                    url = new URL(FETCH_USER_TASKS_URL);
                 } catch (MalformedURLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -438,13 +439,7 @@ public class ArCoreActivity extends AppCompatActivity implements FragmentOnAttac
                                                                     .build().thenAccept(viewRenderable -> {
                                                                         ArCoreActivity activity = weakActivity.get();
                                                                         if (activity != null) {
-                                                                            try {
-                                                                                anchorHandler.placeAnchor(anchor, arFragment, imageUuid, model, viewRenderable, null);
-                                                                            } catch (
-                                                                                    ExecutionException |
-                                                                                    InterruptedException e) {
-                                                                                throw new RuntimeException(e);
-                                                                            }
+                                                                            anchorHandler.loadAnchor(anchor, arFragment, task, model, viewRenderable);
                                                                         }
                                                                     });
                                                     Toast.makeText(ArCoreActivity.this, "Anchor resolved", Toast.LENGTH_LONG).show();

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.camera.core.Camera;
@@ -19,6 +20,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.example.projectmanagement_calcapp.Models.Task;
 import com.google.android.material.slider.Slider;
 
 import org.jetbrains.annotations.Nullable;

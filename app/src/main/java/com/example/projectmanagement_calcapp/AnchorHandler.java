@@ -1,11 +1,18 @@
 package com.example.projectmanagement_calcapp;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.camera.view.PreviewView;
+
+import com.example.projectmanagement_calcapp.Models.Task;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.GeospatialPose;
 import com.google.ar.sceneform.AnchorNode;
@@ -22,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -35,12 +43,14 @@ import java.util.concurrent.ExecutionException;
 
 public class AnchorHandler extends Activity implements Serializable {
     ImageView savedTaskImage;
+    TextView taskName, assigner, assignee, gpscoords;
+
+    ProgressBar progressBar;
 
 
 
     public Anchor placeAnchor(Anchor anchor, ArFragment fragment, String imageUuid, Renderable renderable, ViewRenderable viewRenderable, Bitmap bitmap) throws ExecutionException, InterruptedException {
 
-        System.out.println(imageUuid);
         AnchorNode anchorNode = new AnchorNode(anchor);
         anchorNode.setParent(fragment.getArSceneView().getScene());
 
@@ -58,7 +68,7 @@ public class AnchorHandler extends Activity implements Serializable {
         fragment.getArSceneView().getScene().addOnUpdateListener(frameTime -> {
             Vector3 cameraPosition = new Vector3(fragment.getArSceneView().getScene().getCamera().getWorldPosition().x, 0, fragment.getArSceneView().getScene().getCamera().getWorldPosition().z);
             Vector3 cardPosition = new Vector3(titleNode.getWorldPosition().x, 0, titleNode.getWorldPosition().z);
-            Vector3 direction = Vector3.subtract(cameraPosition, cardPosition);
+            Vector3 direction = Vector3.subtract(cameraPosition, cardPosition); 
             Quaternion lookRotation = Quaternion.lookRotation(direction, Vector3.up());
             titleNode.setWorldRotation(lookRotation);
             viewRenderable.getView().setAlpha(1 - calculateDistance(fragment.getArSceneView().getScene().getCamera(), model));
@@ -68,6 +78,57 @@ public class AnchorHandler extends Activity implements Serializable {
 //        assigneeHandler = new AssigneeHandler();
 //        ListView assigneeListView = (ListView) viewRenderable.getView().findViewById(R.id.assigneeList);
 //        assigneeHandler.populateAssigneeList(activity, assigneeListView);
+
+        return anchor;
+    }
+
+    public Anchor loadAnchor(Anchor anchor, ArFragment fragment, Task task, Renderable model, ViewRenderable viewRenderable){
+
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+
+
+        AnchorNode anchorNode = new AnchorNode(anchor);
+        anchorNode.setParent(fragment.getArSceneView().getScene());
+
+        TransformableNode transformableNode = animateModel(fragment, anchorNode, model);
+        transformableNode.setName(task.getId().toString());
+        Node titleNode = new Node();
+        titleNode.setParent(transformableNode);
+        titleNode.setEnabled(false);
+        titleNode.setLocalPosition(new Vector3(0.0f, 0.5f, 0.0f));
+        titleNode.setRenderable(viewRenderable);
+        titleNode.setEnabled(true);
+
+        fragment.getArSceneView().getScene().addOnUpdateListener(frameTime -> {
+            Vector3 cameraPosition = new Vector3(fragment.getArSceneView().getScene().getCamera().getWorldPosition().x, 0, fragment.getArSceneView().getScene().getCamera().getWorldPosition().z);
+            Vector3 cardPosition = new Vector3(titleNode.getWorldPosition().x, 0, titleNode.getWorldPosition().z);
+            Vector3 direction = Vector3.subtract(cameraPosition, cardPosition);
+            Quaternion lookRotation = Quaternion.lookRotation(direction, Vector3.up());
+            titleNode.setWorldRotation(lookRotation);
+            viewRenderable.getView().setAlpha(1 - calculateDistance(fragment.getArSceneView().getScene().getCamera(), transformableNode));
+        });
+
+        savedTaskImage = viewRenderable.getView().findViewById(R.id.currentTaskImage);
+        savedTaskImage.setImageBitmap(BitmapFactory.decodeFile(directory.getAbsolutePath() + "/" + task.getImageUuid() + ".png"));
+
+        taskName = viewRenderable.getView().findViewById(R.id.taskViewName);
+        taskName.setText(task.getTitle());
+
+        assigner = viewRenderable.getView().findViewById(R.id.assignedBy);
+        assigner.setText(task.getAssignerId().toString());
+
+        assignee = viewRenderable.getView().findViewById(R.id.assignedTo);
+        assignee.setText(task.getAssignee().toString());
+
+        gpscoords = viewRenderable.getView().findViewById(R.id.gpscoordstext);
+        gpscoords.setText("Latitude: " + task.getLatitude() + ", Longitude: " + task.getLongitude());
+
+        progressBar = viewRenderable.getView().findViewById(R.id.priorityProgressBar);
+        progressBar.setProgress(Integer.parseInt(task.getPriority().toString()), true);
+
+        addModelListeners(fragment, transformableNode, task.getImageUuid());
 
         return anchor;
     }
