@@ -31,6 +31,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="70dp"
                     app:shapeAppearance="@mipmap/ic_launcher_round" />
+
             </LinearLayout>
         </androidx.camera.view.PreviewView>
         <androidx.appcompat.widget.Toolbar
@@ -62,6 +63,13 @@
                 android:textColor="#fff"
                 android:textSize="14dp" />
         </androidx.appcompat.widget.Toolbar>
+        <Button
+            android:id="@+id/captureBtn"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Take Photo" />
 
     </FrameLayout>
     <LinearLayout

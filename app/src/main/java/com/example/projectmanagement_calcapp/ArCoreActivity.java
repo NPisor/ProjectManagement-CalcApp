@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Button;
@@ -56,6 +58,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -67,6 +71,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -82,8 +87,6 @@ public class ArCoreActivity extends AppCompatActivity implements FragmentOnAttac
         ArFragment.OnViewCreatedListener{
 
     public ArFragment arFragment;
-
-    public S3Handler s3Handler;
     public Renderable model;
     MutableLiveData<Bitmap> bitmap;
 
@@ -97,6 +100,8 @@ public class ArCoreActivity extends AppCompatActivity implements FragmentOnAttac
     Long assigneeId;
     AnchorHandler anchorHandler;
     String imageUuid;
+
+    Parcelable[] imageByteArray;
     WeakReference<ArCoreActivity> weakActivity;
 
     private static final String FETCH_USER_TASKS_URL = "http://10.0.0.125:8080/task/assigneeIdJson?assigneeId=0";
@@ -183,6 +188,7 @@ public class ArCoreActivity extends AppCompatActivity implements FragmentOnAttac
         taskName = data.getStringExtra("taskName");
         taskPriority = data.getLongExtra("taskPriority",0);
         assigneeId = data.getLongExtra("assigneeId", 0);
+        imageByteArray = data.getParcelableArrayExtra("imageBytes");
 
         CreateAnchorRequest currentAnchorRequest = new CreateAnchorRequest();
         currentAnchorRequest.setLatitude((float) data.getDoubleExtra("taskLatitude", 0));
@@ -193,9 +199,15 @@ public class ArCoreActivity extends AppCompatActivity implements FragmentOnAttac
         currentAnchorRequest.setPriority(taskPriority);
         bitmap.postValue(BitmapFactory.decodeFile(data.getStringExtra("imagePath")));
 
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        Bitmap bitmapToSend = BitmapFactory.decodeFile(data.getStringExtra("imagePath"));
+        bitmapToSend.compress(Bitmap.CompressFormat.PNG,100, stream);
+        byte [] b=stream.toByteArray();
+        String temp= Base64.encodeToString(b, Base64.DEFAULT);
+
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("assigneeId", assigneeId).put("assignerId", 2L).put("clientId", 1L).put("priority", taskPriority)
+            jsonObject.put("assigneeId", assigneeId).put("assignerId", 2L).put("imageBytes", temp).put("clientId", 1L).put("priority", taskPriority)
             .put("status", 1L).put("description", "This is a test description.").put("imageUuid", imageUuid).put("taskTitle", taskName).put("longitude", (float) data.getDoubleExtra("taskLongitude", 0)).put("latitude", (float) data.getDoubleExtra("taskLatitude", 0));
         } catch (JSONException e) {
             throw new RuntimeException(e);
@@ -244,6 +256,8 @@ public class ArCoreActivity extends AppCompatActivity implements FragmentOnAttac
                                             anchorHandler.placeAnchor(anchor, arFragment, imageUuid, model, viewRenderable, bitmap);
                                         } catch (ExecutionException |
                                                  InterruptedException e) {
+                                            throw new RuntimeException(e);
+                                        } catch (FileNotFoundException e) {
                                             throw new RuntimeException(e);
                                         }
                                     });
@@ -423,11 +437,12 @@ public class ArCoreActivity extends AppCompatActivity implements FragmentOnAttac
                             Timestamp createdTs = new Timestamp(Long.valueOf(node.getString("createdTs")));
                             Long status = Long.valueOf(node.getString("status"));
                             Long priority = Long.valueOf(node.getString("priority"));
-                            String imageUuid = node.getString("taskImageUrl");
+                            String taskImageUrl = node.getString("taskImageUrl");
                             Float latitude = Float.valueOf(node.getString("latitude"));
                             Float longitude = Float.valueOf(node.getString("longitude"));
+                            String imageBytes = node.getString("imageBytes");
 
-                            Task task = new Task(Long.valueOf(id), longitude, latitude, 0f, description, imageUuid, assigneeId, priority, status, createdTs, assignerId, title);
+                            Task task = new Task(Long.valueOf(id), longitude, latitude, 0f, description, taskImageUrl, assigneeId, priority, status, createdTs, assignerId, title, imageBytes);
 
                             final ResolveAnchorOnTerrainFuture future =
                                     earth.resolveAnchorOnTerrainAsync(latitude, longitude, 0.0f, earth.getCameraGeospatialPose().getEastUpSouthQuaternion()[0], earth.getCameraGeospatialPose().getEastUpSouthQuaternion()[1],

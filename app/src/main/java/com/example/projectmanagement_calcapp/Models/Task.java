@@ -32,7 +32,9 @@ public class Task {
 
     String title;
 
-    public Task(Long id, Float longitude, Float latitude, Float altitude, String description, String imageUuid, Long assignee, Long priority, Long status, Timestamp createdTs, Long assignerId, String title) {
+    String imageBytes;
+
+    public Task(Long id, Float longitude, Float latitude, Float altitude, String description, String imageUuid, Long assignee, Long priority, Long status, Timestamp createdTs, Long assignerId, String title, String imageBytes) {
         this.id = id;
         this.longitude = longitude;
         this.latitude = latitude;
@@ -45,6 +47,7 @@ public class Task {
         this.createdTs = createdTs;
         this.assignerId = assignerId;
         this.title = title;
+        this.imageBytes = imageBytes;
     }
 
     public Long getId() {
@@ -141,5 +144,13 @@ public class Task {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getImageBytes() {
+        return imageBytes;
+    }
+
+    public void setImageBytes(String imageBytes) {
+        this.imageBytes = imageBytes;
     }
 }

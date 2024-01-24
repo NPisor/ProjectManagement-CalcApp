@@ -29,7 +29,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -44,12 +46,11 @@ import java.util.concurrent.ExecutionException;
 public class AnchorHandler extends Activity implements Serializable {
     ImageView savedTaskImage;
     TextView taskName, assigner, assignee, gpscoords;
-
     ProgressBar progressBar;
 
 
 
-    public Anchor placeAnchor(Anchor anchor, ArFragment fragment, String imageUuid, Renderable renderable, ViewRenderable viewRenderable, Bitmap bitmap) throws ExecutionException, InterruptedException {
+    public Anchor placeAnchor(Anchor anchor, ArFragment fragment, String imageUuid, Renderable renderable, ViewRenderable viewRenderable, Bitmap bitmap) throws ExecutionException, InterruptedException, FileNotFoundException {
 
         AnchorNode anchorNode = new AnchorNode(anchor);
         anchorNode.setParent(fragment.getArSceneView().getScene());
@@ -84,11 +85,6 @@ public class AnchorHandler extends Activity implements Serializable {
 
     public Anchor loadAnchor(Anchor anchor, ArFragment fragment, Task task, Renderable model, ViewRenderable viewRenderable){
 
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        // path to /data/data/yourapp/app_data/imageDir
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-
-
         AnchorNode anchorNode = new AnchorNode(anchor);
         anchorNode.setParent(fragment.getArSceneView().getScene());
 
@@ -110,8 +106,9 @@ public class AnchorHandler extends Activity implements Serializable {
             viewRenderable.getView().setAlpha(1 - calculateDistance(fragment.getArSceneView().getScene().getCamera(), transformableNode));
         });
 
+        ByteArrayInputStream imageStream = new ByteArrayInputStream(task.getImageBytes().getBytes());
         savedTaskImage = viewRenderable.getView().findViewById(R.id.currentTaskImage);
-        savedTaskImage.setImageBitmap(BitmapFactory.decodeFile(directory.getAbsolutePath() + "/" + task.getImageUuid() + ".png"));
+        savedTaskImage.setImageBitmap(BitmapFactory.decodeStream(imageStream));
 
         taskName = viewRenderable.getView().findViewById(R.id.taskViewName);
         taskName.setText(task.getTitle());
