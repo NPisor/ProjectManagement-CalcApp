@@ -246,18 +246,17 @@ public class ArCoreActivity extends AppCompatActivity implements FragmentOnAttac
         }).addOnSuccessListener(location -> {
                     displayTaskEntryScreen(this, location.getLatitude(), location.getLongitude());
             ViewRenderable.builder()
-                            .setView(this, R.layout.view_model_title)
+                            .setView(this, R.layout.view_task_info)
                             .build()
                             .thenAccept(viewRenderable -> {
                                 ArCoreActivity activity = weakActivity.get();
                                 if (activity != null) {
                                     bitmap.observe(this, bitmap -> {
                                         try {
-                                            anchorHandler.placeAnchor(anchor, arFragment, imageUuid, model, viewRenderable, bitmap);
-                                        } catch (ExecutionException |
-                                                 InterruptedException e) {
-                                            throw new RuntimeException(e);
-                                        } catch (FileNotFoundException e) {
+                                            Task task = new Task(1L, (float) location.getLongitude(), (float) location.getLatitude(), 0f, taskName, imageUuid, assigneeId, taskPriority, 1L, new Timestamp(System.currentTimeMillis()), 2L, taskName, imageUuid);
+                                            anchorHandler.placeAnchor(anchor, arFragment, imageUuid, model, viewRenderable, bitmap, task);
+                                        } catch (ExecutionException | InterruptedException |
+                                                 FileNotFoundException e) {
                                             throw new RuntimeException(e);
                                         }
                                     });

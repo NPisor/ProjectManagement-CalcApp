@@ -1,5 +1,6 @@
 package com.example.projectmanagement_calcapp;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -50,7 +51,8 @@ public class AnchorHandler extends Activity implements Serializable {
 
 
 
-    public Anchor placeAnchor(Anchor anchor, ArFragment fragment, String imageUuid, Renderable renderable, ViewRenderable viewRenderable, Bitmap bitmap) throws ExecutionException, InterruptedException, FileNotFoundException {
+    @SuppressLint("SetTextI18n")
+    public Anchor placeAnchor(Anchor anchor, ArFragment fragment, String imageUuid, Renderable renderable, ViewRenderable viewRenderable, Bitmap bitmap, Task task) throws ExecutionException, InterruptedException, FileNotFoundException {
 
         AnchorNode anchorNode = new AnchorNode(anchor);
         anchorNode.setParent(fragment.getArSceneView().getScene());
@@ -61,10 +63,15 @@ public class AnchorHandler extends Activity implements Serializable {
         Node titleNode = new Node();
         titleNode.setParent(model);
         titleNode.setEnabled(false);
-        titleNode.setLocalPosition(new Vector3(0.0f, 0.5f, 0.0f));
+        titleNode.setLocalPosition(new Vector3(0.0f, 0.2f, 0.0f));
         titleNode.setRenderable(viewRenderable);
         titleNode.setEnabled(true);
-        savedTaskImage = viewRenderable.getView().findViewById(R.id.TaskImage);
+        savedTaskImage = viewRenderable.getView().findViewById(R.id.currentTaskImage);
+        taskName = viewRenderable.getView().findViewById(R.id.taskViewName);
+        assigner = viewRenderable.getView().findViewById(R.id.assignedBy);
+        assignee = viewRenderable.getView().findViewById(R.id.assignedTo);
+        gpscoords = viewRenderable.getView().findViewById(R.id.gpscoordstext);
+        progressBar = viewRenderable.getView().findViewById(R.id.priorityProgressBar);
 
         fragment.getArSceneView().getScene().addOnUpdateListener(frameTime -> {
             Vector3 cameraPosition = new Vector3(fragment.getArSceneView().getScene().getCamera().getWorldPosition().x, 0, fragment.getArSceneView().getScene().getCamera().getWorldPosition().z);
@@ -75,6 +82,11 @@ public class AnchorHandler extends Activity implements Serializable {
             viewRenderable.getView().setAlpha(1 - calculateDistance(fragment.getArSceneView().getScene().getCamera(), model));
         });
         savedTaskImage.setImageBitmap(bitmap);
+        taskName.setText(task.getTitle());
+        assigner.setText(task.getAssignerId().toString());
+        assignee.setText(task.getAssignee().toString());
+        gpscoords.setText("Latitude: " + task.getLatitude() + ", Longitude: " + task.getLongitude());
+        progressBar.setProgress(Integer.parseInt(task.getPriority().toString()), true);
         addModelListeners(fragment, model, imageUuid);
 //        assigneeHandler = new AssigneeHandler();
 //        ListView assigneeListView = (ListView) viewRenderable.getView().findViewById(R.id.assigneeList);
@@ -93,6 +105,7 @@ public class AnchorHandler extends Activity implements Serializable {
         Node titleNode = new Node();
         titleNode.setParent(transformableNode);
         titleNode.setEnabled(false);
+        titleNode.setLocalScale(new Vector3(0.5f, 0.5f, 0.5f));
         titleNode.setLocalPosition(new Vector3(0.0f, 0.5f, 0.0f));
         titleNode.setRenderable(viewRenderable);
         titleNode.setEnabled(true);
@@ -133,7 +146,7 @@ public class AnchorHandler extends Activity implements Serializable {
     public TransformableNode animateModel(ArFragment fragment, AnchorNode anchorNode, Renderable renderable) {
         TransformableNode model = new TransformableNode(fragment.getTransformationSystem());
         model.setParent(anchorNode);
-        model.setLocalScale(new Vector3(0.3f, 0.3f, 0.3f));
+        model.setLocalScale(new Vector3(0.1f, 0.1f, 0.1f));
         model.setRenderable(renderable).animate(true).start();
         model.select();
 
